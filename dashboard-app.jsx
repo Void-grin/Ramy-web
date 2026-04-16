@@ -1290,10 +1290,22 @@ function normalizeConfidence(rawScores, predictedClass, confidenceValue) {
 function getApiBaseCandidates() {
   const candidates = [];
   const proto = window.location?.protocol || "";
+  const hostname = String(window.location?.hostname || "").toLowerCase();
+  const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
   const configured = String(window.__API_BASE__ || "").trim();
 
   if (configured) {
     candidates.push(configured);
+    if (isLocalUi) {
+      if (proto === "http:" || proto === "https:") {
+        candidates.push("");
+        if (window.location?.origin) {
+          candidates.push(window.location.origin);
+        }
+      }
+      candidates.push("http://127.0.0.1:8000", "http://localhost:8000");
+    }
+    return [...new Set(candidates.filter(Boolean))];
   }
 
   if (proto === "http:" || proto === "https:") {
@@ -1303,7 +1315,9 @@ function getApiBaseCandidates() {
     }
   }
 
-  candidates.push("http://127.0.0.1:8000", "http://localhost:8000");
+  if (isLocalUi) {
+    candidates.push("http://127.0.0.1:8000", "http://localhost:8000");
+  }
   return [...new Set(candidates.filter(Boolean))];
 }
 
@@ -1503,8 +1517,15 @@ function LiveDemoPage({ currentPath }) {
       const prediction = await fetchPrediction(text);
       setResult(prediction);
     } catch (error) {
-      setResult(mockPredict(text));
-      setErrorMessage(`API unavailable, showing mock prediction. Reason: ${error.message || "Unknown error"}`);
+      const hostname = String(window.location?.hostname || "").toLowerCase();
+      const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
+      if (isLocalUi) {
+        setResult(mockPredict(text));
+        setErrorMessage(`API unavailable, showing mock prediction. Reason: ${error.message || "Unknown error"}`);
+      } else {
+        setResult(null);
+        setErrorMessage(`Live API unavailable. Reason: ${error.message || "Unknown error"}`);
+      }
     } finally {
       setIsLoading(false);
     }
