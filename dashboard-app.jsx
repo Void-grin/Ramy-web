@@ -1324,6 +1324,8 @@ function getApiBaseCandidates() {
 async function fetchFromApi(path, options = {}) {
   const candidates = getApiBaseCandidates();
   const host = window.location?.origin || "";
+  const hostname = String(window.location?.hostname || "").toLowerCase();
+  const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
   let lastError = null;
 
   for (const base of candidates) {
@@ -1337,8 +1339,15 @@ async function fetchFromApi(path, options = {}) {
 
   const locationHint = host || "file://";
   const baseMessage = lastError?.message || "Unable to connect to API";
+  if (isLocalUi) {
+    throw new Error(
+      `${baseMessage}. Current UI origin: ${locationHint}. Start backend on http://127.0.0.1:8000 and refresh.`
+    );
+  }
+
+  const configuredBase = String(window.__API_BASE__ || "").trim() || "(same origin)";
   throw new Error(
-    `${baseMessage}. Current UI origin: ${locationHint}. Start backend on http://127.0.0.1:8000 and refresh.`
+    `${baseMessage}. Current UI origin: ${locationHint}. Configured API base: ${configuredBase}. The live backend may be down or blocked.`
   );
 }
 
