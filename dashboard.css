@@ -239,6 +239,21 @@ body::before {
     radial-gradient(circle at 95% 100%, rgba(143, 18, 33, 0.22), transparent 44%);
 }
 
+.hero-solid {
+  background:
+    radial-gradient(circle at 14% -10%, rgba(255, 153, 167, 0.25), transparent 45%),
+    radial-gradient(circle at 92% 120%, rgba(87, 8, 18, 0.35), transparent 44%),
+    linear-gradient(120deg, #991b2b 0%, #871221 54%, #6f0e1b 100%);
+  color: #ffffff;
+}
+
+.hero-solid h2,
+.hero-solid p,
+.hero-solid span {
+  color: #fff !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+
 /* ── Selection & scrollbar ────────────────────── */
 
 ::selection {

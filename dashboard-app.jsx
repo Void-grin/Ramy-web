@@ -736,7 +736,7 @@ function OverviewPage({ currentPath }) {
         currentPath={currentPath}
       />
 
-      <Card className="gradient-hero hero-glow card-paper-no-overlay p-6 md:p-8 mb-6 border-rose-800 bg-navy text-white shadow-[0_18px_36px_rgba(127,29,29,0.35)]" delay={0}>
+      <Card className="gradient-hero hero-glow hero-solid card-paper-no-overlay p-6 md:p-8 mb-6 border-rose-800 text-white shadow-[0_18px_36px_rgba(127,29,29,0.35)]" delay={0}>
         <h2 className="text-3xl md:text-4xl font-extrabold">{t("overview.heroTitle")}</h2>
         <p className="mt-3 text-rose-50 max-w-3xl text-base md:text-lg leading-8">
           {t("overview.heroText")}
