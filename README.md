@@ -1,4 +1,4 @@
-# Ramy Frontend
+# Ramy-web
 
 Standalone frontend (no Python) using React UMD + Babel for runtime rendering.
 
