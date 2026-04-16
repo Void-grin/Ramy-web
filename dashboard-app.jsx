@@ -96,14 +96,14 @@ const I18N = {
     "overview.aboutTitle": "حول هذا المشروع",
     "overview.aboutBody": "Ramy Sentiment Intelligence يجمع بين جمع بيانات حقيقية من الجزائر، وFine-Tuning لـ AraBERT، وSelf-Training، ومعايرة العتبات لتقديم تحليلات مشاعر موثوقة من 5 فئات على نصوص عربية/دارجة/فرنسية.",
     "live.title": "التحليل المباشر",
-    "live.subtitle": "تحليل مباشر بالنموذج فقط (XAI معطل في هذا الوضع)",
+    "live.subtitle": "تحليل مباشر بالنموذج فقط مع تفسير XAI عند توفره",
     "live.inputLabel": "أدخل نص ملاحظة العميل",
     "live.placeholder": "مثال: رامي بنين ولكن السعر مرتفع قليلا",
     "live.analyze": "حلل المشاعر",
     "live.predicted": "الفئة المتوقعة",
     "live.language": "اللغة المكتشفة",
     "live.confidence": "الثقة حسب الفئة",
-    "live.modelOnly": "وضع النموذج فقط مفعل. تفسير XAI معطل.",
+    "live.modelOnly": "تفسير XAI مفعل عند توفره من المزود.",
     "live.uploadTitle": "تحليل ملف CSV / Excel",
     "live.uploadHint": "ارفع ملف تعليقات وسيتم تصنيف كل صف ثم عرض النتيجة أو تنزيلها.",
     "live.fileField": "الملف",
@@ -189,14 +189,14 @@ const I18N = {
     "overview.aboutTitle": "A propos du projet",
     "overview.aboutBody": "Ramy Sentiment Intelligence combine collecte terrain algerienne, fine-tuning AraBERT, self-training et calibration de seuils pour une analyse 5 classes robuste en arabe/darija/francais.",
     "live.title": "Demo en direct",
-    "live.subtitle": "Inference modele en temps reel (XAI desactive dans ce mode)",
+    "live.subtitle": "Inference modele en temps reel avec attribution XAI quand disponible",
     "live.inputLabel": "Entrer le texte du feedback client",
     "live.placeholder": "Exemple: ramy tres bon mais prix un peu cher",
     "live.analyze": "Analyser le sentiment",
     "live.predicted": "Classe predite",
     "live.language": "Langue detectee",
     "live.confidence": "Confiance par classe",
-    "live.modelOnly": "Mode modele seul actif. Attribution XAI desactivee.",
+    "live.modelOnly": "Attribution XAI active lorsqu'elle est disponible.",
     "live.uploadTitle": "Analyse de fichier CSV / Excel",
     "live.uploadHint": "Chargez un fichier de commentaires pour classer chaque ligne et exporter le resultat.",
     "live.fileField": "Fichier",
@@ -282,14 +282,14 @@ const I18N = {
     "overview.aboutTitle": "About this project",
     "overview.aboutBody": "Ramy Sentiment Intelligence combines real Algerian collection, AraBERT fine-tuning, pseudo-label self-training, and threshold calibration for robust five-class sentiment analytics on mixed Arabic/Darja/French text.",
     "live.title": "Live Demo / Inference",
-    "live.subtitle": "Real-time model-only inference (XAI disabled in this mode)",
+    "live.subtitle": "Real-time model-only inference with XAI attribution when available",
     "live.inputLabel": "Enter customer feedback text",
     "live.placeholder": "Example: ramy tres bon mais prix un peu cher",
     "live.analyze": "Analyze Sentiment",
     "live.predicted": "Predicted Class",
     "live.language": "Detected Language",
     "live.confidence": "Confidence by Class",
-    "live.modelOnly": "Model-only mode is active. XAI attribution is disabled.",
+    "live.modelOnly": "XAI attribution is enabled when available from provider.",
     "live.uploadTitle": "CSV / Excel Batch Analysis",
     "live.uploadHint": "Upload a file of comments, classify each row, then view and export results.",
     "live.fileField": "File",
@@ -1334,7 +1334,8 @@ async function fetchPrediction(text) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       comments: [text],
-      include_xai: false,
+      include_xai: true,
+      xai_top_k: 8,
     }),
   });
 
@@ -1719,6 +1720,29 @@ function LiveDemoPage({ currentPath }) {
             <p className="text-sm text-slate-600">
               {t("live.modelOnly")}
             </p>
+
+            {result.explanationText && (
+              <div className="mt-3 rounded-xl border border-rose-100 bg-rose-50/60 px-3 py-2">
+                <p className="text-xs font-semibold text-rose-900 mb-1">
+                  {locale === "ar" ? "تفسير النموذج" : locale === "fr" ? "Explication du modele" : "Model Explanation"}
+                </p>
+                <p className="text-sm text-rose-900">{result.explanationText}</p>
+              </div>
+            )}
+
+            {Array.isArray(result.topTokens) && result.topTokens.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {result.topTokens.slice(0, 8).map((entry, idx) => {
+                  const token = Array.isArray(entry) ? String(entry[0] || "") : "";
+                  const score = Array.isArray(entry) ? Number(entry[1] || 0) : 0;
+                  return (
+                    <span key={`${token}-${idx}`} className="rounded-full border border-rose-200 bg-white px-3 py-1 text-xs text-rose-900">
+                      {token} ({Math.round(score * 100)}%)
+                    </span>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </Card>
       )}
