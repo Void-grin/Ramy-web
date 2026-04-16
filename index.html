@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramy Sentiment Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Cairo:wght@500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Outfit", "Cairo", "sans-serif"],
+          },
+          colors: {
+            navy: "#8f1221",
+            electric: "#d61f33",
+            sentimentPositive: "#16a34a",
+            sentimentNegative: "#dc2626",
+            sentimentNeutral: "#f59e0b",
+            sentimentImprovement: "#9333ea",
+            sentimentQuestion: "#0f766e",
+          },
+          boxShadow: {
+            soft: "0 14px 40px rgba(185, 28, 45, 0.2)",
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="./dashboard.css?v=20260416node1" />
+</head>
+<body class="bg-rose-50 text-slate-900">
+  <div id="root" class="min-h-screen flex items-center justify-center text-slate-700">
+    <div style="text-align:center; max-width:760px; padding:24px;">
+      <h1 style="margin:0 0 10px; font-size:24px; font-weight:800; color:#8f1221;">Ramy Sentiment Intelligence</h1>
+      <p style="margin:0;">Loading dashboard application...</p>
+      <p style="margin:10px 0 0; font-size:13px; color:#64748b;">If this takes too long, refresh the page and verify internet access for CDN scripts.</p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js" crossorigin></script>
+  <script>
+    // Some UMD bundles (e.g. lucide-react) look for lowercase `react` global.
+    window.react = window.React;
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js"></script>
+  <script src="https://unpkg.com/lucide-react@0.468.0/dist/umd/lucide-react.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script>
+    window.__API_BASE__ = "http://127.0.0.1:8000";
+
+    window.addEventListener('error', function (event) {
+      var root = document.getElementById('root');
+      if (!root) return;
+      root.innerHTML = '<div style="max-width:840px;margin:40px auto;padding:20px;border:1px solid #fecaca;background:#fff1f2;border-radius:12px;font-family:Outfit,Cairo,sans-serif;">'
+        + '<h2 style="margin:0 0 8px;color:#7f1d1d;">Frontend Runtime Error</h2>'
+        + '<p style="margin:0 0 8px;color:#7f1d1d;">The dashboard failed to render in-browser.</p>'
+        + '<pre style="white-space:pre-wrap;color:#111827;background:#fff;border:1px solid #e5e7eb;padding:10px;border-radius:8px;">'
+        + String(event.message || 'Unknown error')
+        + '</pre>'
+        + '</div>';
+    });
+  </script>
+  <script type="text/babel" data-presets="env,react" src="./dashboard-app.jsx?v=20260416node1"></script>
+</body>
+</html>
