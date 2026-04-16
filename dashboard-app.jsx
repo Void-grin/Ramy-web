@@ -1345,10 +1345,7 @@ async function fetchFromApi(path, options = {}) {
     );
   }
 
-  const configuredBase = String(window.__API_BASE__ || "").trim() || "(same origin)";
-  throw new Error(
-    `${baseMessage}. Current UI origin: ${locationHint}. Configured API base: ${configuredBase}. The live backend may be down or blocked.`
-  );
+  throw new Error("Live prediction service is temporarily unavailable. Please try again shortly.");
 }
 
 async function fetchPrediction(text) {
@@ -1533,7 +1530,7 @@ function LiveDemoPage({ currentPath }) {
         setErrorMessage(`API unavailable, showing mock prediction. Reason: ${error.message || "Unknown error"}`);
       } else {
         setResult(null);
-        setErrorMessage(`Live API unavailable. Reason: ${error.message || "Unknown error"}`);
+        setErrorMessage("Live prediction service is temporarily unavailable. Please try again shortly.");
       }
     } finally {
       setIsLoading(false);
@@ -1551,7 +1548,11 @@ function LiveDemoPage({ currentPath }) {
       const payload = await analyzePredictionFile(fileInput, textColumn);
       setFileResult(payload);
     } catch (error) {
-      setFileError(String(error?.message || "Batch analysis failed"));
+      const hostname = String(window.location?.hostname || "").toLowerCase();
+      const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
+      setFileError(isLocalUi
+        ? String(error?.message || "Batch analysis failed")
+        : "Live prediction service is temporarily unavailable. Please try again shortly.");
     } finally {
       setFileLoading(false);
     }
@@ -1567,7 +1568,11 @@ function LiveDemoPage({ currentPath }) {
     try {
       await downloadPredictionFile(fileInput, textColumn, format);
     } catch (error) {
-      setFileError(String(error?.message || "Download failed"));
+      const hostname = String(window.location?.hostname || "").toLowerCase();
+      const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
+      setFileError(isLocalUi
+        ? String(error?.message || "Download failed")
+        : "Live prediction service is temporarily unavailable. Please try again shortly.");
     } finally {
       setFileLoading(false);
     }
