@@ -1527,7 +1527,7 @@ function LiveDemoPage({ currentPath }) {
       const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
       if (isLocalUi) {
         setResult(mockPredict(text));
-        setErrorMessage(`API unavailable, showing mock prediction. Reason: ${error.message || "Unknown error"}`);
+        setErrorMessage("API unavailable, showing mock prediction.");
       } else {
         setResult(null);
         setErrorMessage("Live prediction service is temporarily unavailable. Please try again shortly.");
@@ -1548,11 +1548,7 @@ function LiveDemoPage({ currentPath }) {
       const payload = await analyzePredictionFile(fileInput, textColumn);
       setFileResult(payload);
     } catch (error) {
-      const hostname = String(window.location?.hostname || "").toLowerCase();
-      const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
-      setFileError(isLocalUi
-        ? String(error?.message || "Batch analysis failed")
-        : "Live prediction service is temporarily unavailable. Please try again shortly.");
+      setFileError("Live prediction service is temporarily unavailable. Please try again shortly.");
     } finally {
       setFileLoading(false);
     }
@@ -1568,11 +1564,7 @@ function LiveDemoPage({ currentPath }) {
     try {
       await downloadPredictionFile(fileInput, textColumn, format);
     } catch (error) {
-      const hostname = String(window.location?.hostname || "").toLowerCase();
-      const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
-      setFileError(isLocalUi
-        ? String(error?.message || "Download failed")
-        : "Live prediction service is temporarily unavailable. Please try again shortly.");
+      setFileError("Live prediction service is temporarily unavailable. Please try again shortly.");
     } finally {
       setFileLoading(false);
     }
