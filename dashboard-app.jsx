@@ -1296,15 +1296,6 @@ function getApiBaseCandidates() {
 
   if (configured) {
     candidates.push(configured);
-    if (isLocalUi) {
-      if (proto === "http:" || proto === "https:") {
-        candidates.push("");
-        if (window.location?.origin) {
-          candidates.push(window.location.origin);
-        }
-      }
-      candidates.push("http://127.0.0.1:8000", "http://localhost:8000");
-    }
     return [...new Set(candidates.filter(Boolean))];
   }
 
