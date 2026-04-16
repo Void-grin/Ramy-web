@@ -1326,14 +1326,23 @@ async function fetchFromApi(path, options = {}) {
   const host = window.location?.origin || "";
   const hostname = String(window.location?.hostname || "").toLowerCase();
   const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
+  const requestTimeoutMs = 45000;
   let lastError = null;
 
   for (const base of candidates) {
     const url = `${base}${path}`;
     try {
-      return await fetch(url, options);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
+      try {
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(timeoutId);
+      }
     } catch (error) {
-      lastError = error;
+      lastError = error?.name === "AbortError"
+        ? new Error("Request timeout")
+        : error;
     }
   }
 
@@ -1341,7 +1350,7 @@ async function fetchFromApi(path, options = {}) {
   const baseMessage = lastError?.message || "Unable to connect to API";
   if (isLocalUi) {
     throw new Error(
-      `${baseMessage}. Current UI origin: ${locationHint}. Start backend on http://127.0.0.1:8000 and refresh.`
+      `${baseMessage}. Current UI origin: ${locationHint}. Start backend on http://127.0.0.1:8010 and refresh.`
     );
   }
 
