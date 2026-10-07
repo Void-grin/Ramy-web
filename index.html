@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ramy Sentiment Intelligence</title>
+  <link rel="icon" href="data:," />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Cairo:wght@500;700;800&display=swap" rel="stylesheet" />
@@ -34,11 +35,11 @@
   <link rel="stylesheet" href="./dashboard.css?v=20260416node5" />
 </head>
 <body class="bg-rose-50 text-slate-900">
-  <div id="root" class="min-h-screen flex items-center justify-center text-slate-700">
-    <div style="text-align:center; max-width:760px; padding:24px;">
-      <h1 style="margin:0 0 10px; font-size:24px; font-weight:800; color:#8f1221;">Ramy Sentiment Intelligence</h1>
-      <p style="margin:0;">Loading dashboard application...</p>
-      <p style="margin:10px 0 0; font-size:13px; color:#64748b;">If this takes too long, refresh the page and verify internet access for CDN scripts.</p>
+  <div id="root" class="min-h-screen flex items-center justify-center bg-rose-50">
+    <div style="text-align:center; padding:24px;">
+      <div style="display:inline-block; width:36px; height:36px; border:3px solid #fecdd3; border-top-color:#e11d48; border-radius:50%; animation:spin 0.7s linear infinite; margin-bottom:12px;"></div>
+      <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      <div style="font-weight:700; font-size:16px; color:#8f1221; font-family:Outfit, Cairo, sans-serif;">Ramy Sentiment Intelligence</div>
     </div>
   </div>
 
@@ -51,12 +52,11 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js"></script>
   <script src="https://unpkg.com/lucide-react@0.468.0/dist/umd/lucide-react.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script>
     (function () {
       var isLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname || "");
       window.__API_BASE__ = isLocalhost
-        ? "http://127.0.0.1:8010"
+        ? (window.location.protocol + "//" + window.location.hostname + ":8010")
         : "https://ramy-backend-production.up.railway.app";
     })();
 
@@ -72,6 +72,6 @@
         + '</div>';
     });
   </script>
-  <script type="text/babel" data-presets="env,react" src="./dashboard-app.jsx?v=20260416node11"></script>
+  <script src="./dashboard-app.js?v=20260416"></script>
 </body>
 </html>

@@ -1289,14 +1289,24 @@ function normalizeConfidence(rawScores, predictedClass, confidenceValue) {
 
 function getApiBaseCandidates() {
   const candidates = [];
-  const proto = window.location?.protocol || "";
-  const hostname = String(window.location?.hostname || "").toLowerCase();
+  const proto = window.location?.protocol || "http:";
+  const hostname = String(window.location?.hostname || "").toLowerCase() || "localhost";
   const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
   const configured = String(window.__API_BASE__ || "").trim();
 
   if (configured) {
     candidates.push(configured);
-    return [...new Set(candidates.filter(Boolean))];
+  }
+
+  if (isLocalUi) {
+    candidates.push(
+      `${proto}//${hostname}:8010`,
+      "http://127.0.0.1:8010",
+      "http://localhost:8010",
+      `${proto}//${hostname}:8000`,
+      "http://127.0.0.1:8000",
+      "http://localhost:8000"
+    );
   }
 
   if (proto === "http:" || proto === "https:") {
@@ -1306,18 +1316,13 @@ function getApiBaseCandidates() {
     }
   }
 
-  if (isLocalUi) {
-    candidates.push("http://127.0.0.1:8000", "http://localhost:8000");
-  }
   return [...new Set(candidates.filter(Boolean))];
 }
 
 async function fetchFromApi(path, options = {}) {
   const candidates = getApiBaseCandidates();
   const host = window.location?.origin || "";
-  const hostname = String(window.location?.hostname || "").toLowerCase();
-  const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
-  const requestTimeoutMs = 45000;
+  const requestTimeoutMs = 60000;
   let lastError = null;
 
   for (const base of candidates) {
@@ -1523,15 +1528,8 @@ function LiveDemoPage({ currentPath }) {
       const prediction = await fetchPrediction(text);
       setResult(prediction);
     } catch (error) {
-      const hostname = String(window.location?.hostname || "").toLowerCase();
-      const isLocalUi = hostname === "localhost" || hostname === "127.0.0.1";
-      if (isLocalUi) {
-        setResult(mockPredict(text));
-        setErrorMessage("API unavailable, showing mock prediction.");
-      } else {
-        setResult(null);
-        setErrorMessage("Live prediction service is temporarily unavailable. Please try again shortly.");
-      }
+      console.error("Prediction error:", error);
+      setErrorMessage(error?.message || "Prediction service error.");
     } finally {
       setIsLoading(false);
     }
@@ -1583,10 +1581,19 @@ function LiveDemoPage({ currentPath }) {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              runInference();
+            }
+          }}
           rows={5}
           className={`mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 bg-white focus:ring-2 focus:ring-red-200 focus:outline-none ${isRTL ? "text-right" : ""}`}
           placeholder={t("live.placeholder")}
         />
+        <div className="mt-1 text-xs text-slate-400 flex justify-between items-center">
+          <span>{locale === "ar" ? "اضغط Enter للتحليل مباشرة (Shift+Enter لسطر جديد)" : locale === "fr" ? "Appuyez sur Entrée pour analyser directement (Maj+Entrée pour saut de ligne)" : "Press Enter to analyze directly (Shift+Enter for newline)"}</span>
+        </div>
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={runInference}
