@@ -2505,12 +2505,23 @@ function Sidebar({
   }, "ON")));
 }
 function AppLayout() {
-  const [locale, setLocale] = useState(() => window.localStorage.getItem("ramy-locale") || "ar");
+  const [locale, setLocale] = useState(() => {
+    const saved = window.localStorage.getItem("ramy-selected-locale");
+    if (saved && (saved === "en" || saved === "ar" || saved === "fr")) {
+      return saved;
+    }
+    return "en";
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const path = useHashPath();
   const validPaths = useMemo(() => new Set(navItems.map(i => i.to)), []);
   const currentPath = validPaths.has(path) ? path : "/";
   const isRTL = locale === "ar";
+  const handleLocaleChange = newLocale => {
+    window.localStorage.setItem("ramy-selected-locale", newLocale);
+    window.localStorage.setItem("ramy-locale", newLocale);
+    setLocale(newLocale);
+  };
   const t = useMemo(() => {
     return key => I18N[locale]?.[key] || I18N.en[key] || key;
   }, [locale]);
@@ -2594,7 +2605,7 @@ function AppLayout() {
     dark: true,
     rtl: isRTL,
     value: locale,
-    onChange: setLocale,
+    onChange: handleLocaleChange,
     options: localeOptions
   }), /*#__PURE__*/React.createElement("span", {
     className: "hidden md:inline-flex rounded-full border border-rose-100/30 bg-white/15 px-3 py-1 text-xs font-semibold text-white"
