@@ -57,7 +57,7 @@
       var isLocalhost = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname || "");
       window.__API_BASE__ = isLocalhost
         ? (window.location.protocol + "//" + window.location.hostname + ":8010")
-        : "https://ramy-backend-production.up.railway.app";
+        : (window.location.origin || "");
     })();
 
     window.addEventListener('error', function (event) {

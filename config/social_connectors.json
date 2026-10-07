@@ -1,0 +1,29 @@
+{
+  "updated_at": "2026-04-16T04:19:50.596Z",
+  "connectors": {
+    "facebook": {
+      "platform": "facebook",
+      "enabled": false,
+      "page_id": "",
+      "access_token": "",
+      "verify_token": "",
+      "webhook_url": "/api/social/webhook/facebook"
+    },
+    "instagram": {
+      "platform": "instagram",
+      "enabled": false,
+      "page_id": "",
+      "access_token": "",
+      "verify_token": "",
+      "webhook_url": "/api/social/webhook/instagram"
+    },
+    "tiktok": {
+      "platform": "tiktok",
+      "enabled": false,
+      "page_id": "",
+      "access_token": "",
+      "verify_token": "",
+      "webhook_url": "/api/social/webhook/tiktok"
+    }
+  }
+}
