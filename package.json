@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "http-server . -p 5173 -a 127.0.0.1 -c-1",
+    "build": "echo 'Build ready'",
     "start": "node api/index.js"
   },
   "dependencies": {
